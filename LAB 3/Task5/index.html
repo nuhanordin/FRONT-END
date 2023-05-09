@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 3 Task 5</title>
+  <style>
+    table,
+    th,
+    td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 5px;
+    }
+  </style>
+  <script>
+    function addRecord() {
+      var table = document.getElementById("myT");
+
+      var newRow = document.createElement("tr");
+
+      var idCell = document.createElement("td");
+      idCell.textContent = "4";
+
+      var nameCell = document.createElement("td");
+      nameCell.textContent = "Mukhriz Jamil Asoka";
+
+      var emailCell = document.createElement("td");
+      emailCell.textContent = "mukhriz@corp.jo";
+
+      var phoneCell = document.createElement("td");
+      phoneCell.textContent = "651181187223";
+
+      var deleteCell = document.createElement("button");
+      deleteCell.textContent = "Delete";
+      deleteCell.onclick = deleteRow;
+
+      newRow.appendChild(idCell);
+      newRow.appendChild(nameCell);
+      newRow.appendChild(emailCell);
+      newRow.appendChild(phoneCell);
+      newRow.appendChild(deleteCell);
+
+      table.appendChild(newRow);
+    }
+
+    function addTableHeaders() {
+      var table = document.getElementById("myT");
+
+      // Create a new row for headers
+      var headerRow = document.createElement("tr");
+
+      // Create and populate the header cells
+      var idHeader = document.createElement("th");
+      idHeader.textContent = "#";
+
+      var nameHeader = document.createElement("th");
+      nameHeader.textContent = "Name";
+
+      var emailHeader = document.createElement("th");
+      emailHeader.textContent = "Email";
+
+      var phoneHeader = document.createElement("th");
+      phoneHeader.textContent = "Phone #";
+
+      // Append the header cells to the header row
+      headerRow.appendChild(idHeader);
+      headerRow.appendChild(nameHeader);
+      headerRow.appendChild(emailHeader);
+      headerRow.appendChild(phoneHeader);
+
+      // Insert the header row at the beginning of the table
+      table.insertBefore(headerRow, table.firstChild);
+    }
+
+    function deleteRow() {
+      // event.target will be the input element.
+      var td = event.target.parentNode; 
+      var tr = td.parentNode; // the row to be removed
+      tr.parentNode.removeChild(tr);
+}
+  </script>
+</head>
+
+<body>
+  <table id="myT">
+    <tr>
+      <td>1</td>
+      <td>Ahmad Faisal</td>
+      <td>ahmadfaisal@gmail.com</td>
+      <td>019-9088888</td>
+      <td><input type="button" value="Delete" onclick="deleteRow()"></td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Ismail Sabri</td>
+      <td>isabri@mail.com</td>
+      <td>019-9076760</td>
+      <td><input type="button" value="Delete" onclick="deleteRow()"></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Fateh Yakin</td>
+      <td>ffateh@hotmail.com</td>
+      <td>017-6067762</td>
+      <td><input type="button" value="Delete" onclick="deleteRow()"></td>
+    </tr>
+  </table>
+  <br />
+  <button onclick="addRecord()">Add Record</button>
+  <button onclick="addTableHeaders()">Add Table Header</button>
+</body>
+
+</html>
