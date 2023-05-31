@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+
+<body>
+    <p></p>
+    <div class="container">
+        <div class="grid">
+            <select>
+                <option value="Classic Cars">Classic Cars</option>
+                <option value="Motorcycles">Motorcycles</option>
+                <option value="Planes">Planes</option>
+                <option value="Ships">Ships</option>
+                <option value="Trains">Trains</option>
+                <option value="Trucks and Buses">Trucks and Buses</option>
+                <option value="Vintage Cars">Vintage Cars</option>
+            </select>
+            <button>Get</button>
+        </div>
+        <figure></figure>
+    </div>
+    <script>
+        const select = document.querySelector("select");
+        const button = document.querySelector("button");
+        const figure = document.querySelector("figure");
+
+        async function getData() {
+            const response = await fetch('task2.json');
+            const data = await response.json();
+            return data;
+        }
+
+        button.addEventListener('click', (event) => {
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+
+            // add header
+            [
+                "Product Code",
+                "Product Name",
+                "Product Line",
+                "Product Scale",
+                "Product Vendor",
+                "Product Description",
+                "Quantity In Stock",
+                "Buy Price",
+                "MSRP"
+            ].forEach(key => {
+                const th = document.createElement('th');
+                th.textContent = key;
+                thead.appendChild(th);
+            });
+            table.appendChild(thead);
+
+            getData().then(jsonData => {
+                figure.innerHTML = "";
+
+                const selectedProductLine = select.value;
+
+                const filteredData = jsonData.filter(item => item.productLine === selectedProductLine);
+                filteredData.forEach(item => {
+                    // console.log(item); // debug
+
+                    const tr = document.createElement('tr');
+                    Object.values(item).forEach(value => {
+                        const td = document.createElement('td');
+                        td.textContent = value;
+                        tr.appendChild(td);
+                    });
+                    table.appendChild(tr);
+                });
+
+                figure.appendChild(table);
+            });
+        });
+
+        /* button.addEventListener("click", () => {
+             let selectedValue = button.options[button.selectedIndex].value;
+             let url = "https://skimtech.my/getProductByChoice.php?q=" + selectedValue;
+    
+             let xhr = new XMLHttpRequest();
+             xhr.onreadystatechange = function () {
+                 if (this.readyState == 4 && this.status == 200) {
+                     console.log(this.responseText);
+                     let data = JSON.parse(this.responseText);
+    
+                     let t = document.createElement("table");
+                     let th = document.createElement("thead");
+                     for (let key in data[0]) {
+                         let td = document.createElement("td");
+                         td.innerText = key;
+                         th.appendChild(td);
+                     }
+                     t.appendChild(th);
+    
+                     main.appendChild(t);
+                 }
+             };
+             xhr.open("GET", url, true);
+             xhr.send();
+         }); */
+    </script>
+</body>
+
+</html>
