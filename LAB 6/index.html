@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        h1{
+            background-color: pink;
+            border-radius: 10px;
+            padding: 5px 0;
+        }
+
+        div {
+            margin-bottom: 10px;
+            margin-left: 10px;
+        }
+
+        label {
+            display: inline-block;
+            width: 50px;
+            text-align: left;
+        }
+
+        label,
+        input {
+            margin: 5px;
+        }
+
+        button {
+            background-color: pink;
+
+        }
+
+        .container {
+            width: 40%;
+            margin-top: 50px;
+            margin-bottom: 50px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        table {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+        .container {
+            width: 80%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .container {
+            width: 100%;
+        }
+    }
+    </style>
+</head>
+
+<body>
+    <p>
+
+    </p>
+    <div class="container">
+
+        <h1 class="text-center"> CRUD Firebase </h1><br><br>
+        <h3> Insert Data </h3>
+        <label>Id</label><input id="inputID" type="text"><br>
+        <label>Name</label><input id="inputName" type="text"><br>
+        <label>Age</label><input id="inputAge" type="number"><br>
+        <label></label>
+        <button id="btninsert">Insert</button>
+        <button id="btnreset">Reset</button>
+
+        <br>
+        <br>
+        <h3 style="display: inline;">View Data</h3>
+        <button id="btnview" style="display: inline;">View</button>
+        <br><br>
+        <!--- <ul id="dataList"></ul> -->
+        <table id="dataTable" class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                </tr>
+            </thead>
+            <tbody id="dataList"></tbody>
+        </table>
+
+        <h3> Update Data </h3>
+        <label>Id</label>
+        <input id="updateId" type="text" disabled><br>
+        <label>Name</label>
+        <input id="updateName" type="text"><br>
+        <label>Age</label>
+        <input id="updateAge" type="number"><br>
+        <label></label>
+        <button id="btnupdate" disabled>Update</button>
+        <br>
+        <br>
+        <h3> Find by Id </h3>
+        <label>Id</label>
+        <input id="findId" type="text">
+        <button id="btnfind">Find</button>
+
+        <h6 id="findname" type="text"></h6>
+        <h6 id="findage" type="number"></h6>
+
+        <br>
+        <h3> Delete by Id </h3>
+        <label>Id</label>
+        <input id="deleteId" type="text">
+        <button id="btnremove">Remove</button> <br><br>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-OC5KRv21MOWZZBNis15MHDWR4Inea3M",
+            authDomain: "mars-da149.firebaseapp.com",
+            databaseURL: "https://mars-da149-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "mars-da149",
+            storageBucket: "mars-da149.appspot.com",
+            messagingSenderId: "437341298914",
+            appId: "1:437341298914:web:478f8c0ccc1d93cfc5bebb",
+            measurementId: "G-RKKR7JW0J1"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        //const analytics = getAnalytics(app);
+
+
+        import { getDatabase, set, get, remove, update, ref, child }
+            from "https://www.gstatic.com/firebasejs/9.22/firebase-database.js"
+
+        const db = getDatabase();
+
+
+        var insertID = document.querySelector("#inputID");
+        var insertName = document.querySelector("#inputName");
+        var insertAge = document.querySelector("#inputAge");
+
+        /*
+        Triggered when 'Insert' button clicked.
+        Retrieves values entered in input field.
+        Use Firebase set() to add data under 'people'.
+        And automatically clears input field once insert success 
+        */
+        function funInsertData() {
+            set(ref(db, "people/" + insertID.value), {
+                name: insertName.value,
+                ID: insertID.value,
+                age: insertAge.value
+            })
+                .then(() => {
+                    alert("Data Added Successfully!");
+                    document.querySelector("#inputID").value = "";
+                    document.querySelector("#inputName").value = "";
+                    document.querySelector("#inputAge").value = "";
+                })
+                .catch((error) => {
+                    alert(error)
+                });
+        }
+
+        //Clears input field when 'Reset' button clicked
+        var btnReset = document.querySelector("#btnreset");
+        btnReset.addEventListener("click", () => {
+            document.querySelector("#inputID").value = "";
+            document.querySelector("#inputName").value = "";
+            document.querySelector("#inputAge").value = "";
+        });
+
+        /*
+        Triggered when 'View' button clicked.
+        Retrieves data from 'people' using Firebase get()
+        Then iterates over retrieved data using forEach()
+        New row int 'dataTable' table created for each data item
+        selectUserData() as event listener for each row to select certain data 
+        */
+        function funViewData() {
+            const dataRef = ref(db, "people");
+            const dataTable = document.querySelector("#dataTable");
+            const btnView = document.querySelector("#btnview");
+
+            if (dataTable.style.display === "none") {
+                // Show the table
+                get(dataRef).then((snapshot) => {
+                    const dataList = document.querySelector("#dataList");
+                    dataList.innerHTML = ""; // Clear previous data
+
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val();
+                        const row = document.createElement("tr");
+
+                        const idCell = document.createElement("td");
+                        idCell.textContent = data.ID;
+                        row.appendChild(idCell);
+
+                        const nameCell = document.createElement("td");
+                        nameCell.textContent = data.name;
+                        row.appendChild(nameCell);
+
+                        const ageCell = document.createElement("td");
+                        ageCell.textContent = data.age;
+                        row.appendChild(ageCell);
+
+                        row.addEventListener("click", selectUserData);
+                        dataList.appendChild(row);
+                    });
+
+                    dataTable.style.display = "table"; //Show the table
+                    btnView.textContent = "Close"; //Change the button text
+                }).catch((error) => {
+                    alert(error);
+                });
+            } else {
+                //Hide the table
+                dataTable.style.display = "none";
+                btnView.textContent = "View"; //Change the button text
+            }
+        }
+
+        /*function funViewData() {
+            const dataRef = ref(db, "people");
+            get(dataRef).then((snapshot) => {
+                const dataList = document.querySelector("#dataList");
+                dataList.innerHTML = ""; // Clear previous data
+
+                snapshot.forEach((childSnapshot) => {
+                    const data = childSnapshot.val();
+                    const listItem = document.createElement("li");
+                    listItem.textContent = `ID: ${data.ID}, Name: ${data.name}, Age: ${data.age}`;
+                    listItem.dataset.id = data.ID;
+                    listItem.dataset.name = data.name;
+                    listItem.dataset.age = data.age;
+                    listItem.addEventListener("click", selectUserData);
+                    dataList.appendChild(listItem);
+                });
+            }).catch((error) => {
+                alert(error);
+            });
+        }*/
+
+        var updateId = document.querySelector("#updateId");
+        var updateName = document.querySelector("#updateName");
+        var updateAge = document.querySelector("#updateAge");
+
+        /*function selectUserData(event) {
+            const selectedId = event.target.dataset.id;
+            const selectedName = event.target.dataset.name;
+            const selectedAge = event.target.dataset.age;
+
+            updateId.value = selectedId;
+            updateName.value = selectedName;
+            updateAge.value = selectedAge;
+            btnUpdate.disabled = false;
+        }*/
+
+        /*
+        Triggered when row in table clicked
+        Extract Id, Name, Age value from selected row
+        'Update' button now enabled
+        */
+        function selectUserData(event) {
+            const selectedId = event.target.parentNode.cells[0].textContent;
+            const selectedName = event.target.parentNode.cells[1].textContent;
+            const selectedAge = event.target.parentNode.cells[2].textContent;
+
+            updateId.value = selectedId;
+            updateName.value = selectedName;
+            updateAge.value = selectedAge;
+            btnUpdate.disabled = false;
+        }
+
+        /*
+        Triggered when 'Update' button clicked
+        Retrieves all data from 'people' using get()
+        Iterates through data, compare Id with entered in input field
+        If match found, update corresponding data in Firebase using update()
+        */
+        function funUpdateData() {
+            const dataRef = ref(db, "people");
+
+            get(dataRef)
+                .then((snapshot) => {
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val();
+                        if (data.ID === updateId.value) {
+                            const updateRef = ref(db, `people/${childSnapshot.key}`);
+                            update(updateRef, {
+                                name: updateName.value,
+                                age: updateAge.value,
+                            })
+                                .then(() => {
+                                    alert("Data Updated Successfully!");
+                                    updateId.value = "";
+                                    updateName.value = "";
+                                    updateAge.value = "";
+                                })
+                                .catch((error) => {
+                                    alert(error);
+                                });
+                        }
+                    });
+                })
+                .catch((error) => {
+                    alert(error);
+                });
+        }
+
+        /*
+        Triggered when 'Remove' button clicked
+        Retrieves data from 'people', compares with entered in input field
+        If match found, delete corresponding data from Firebase using remove()
+        */
+
+        /*function funRemoveData() {
+            const deleteId = document.querySelector("#deleteId").value;
+            const dataRef = ref(db, "people");
+
+            get(dataRef)
+                .then((snapshot) => {
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val();
+                        if (data.ID === deleteId) {
+                            const deleteRef = ref(db, `people/${childSnapshot.key}`);
+                            remove(deleteRef)
+                                .then(() => {
+                                    alert("Data Removed Successfully!");
+                                    document.querySelector("#deleteId").value = "";
+                                })
+                                .catch((error) => {
+                                    alert(error);
+                                });
+                        }
+                    });
+                })
+                .catch((error) => {
+                    alert(error);
+                });
+        }*/
+
+        function funRemoveData() {
+            const deleteId = document.querySelector("#deleteId").value;
+            const dataRef = ref(db, "people");
+
+            get(dataRef)
+                .then((snapshot) => {
+                    let matchFound = false; // Flag variable to track if a match is found
+
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val();
+                        if (data.ID === deleteId) {
+                            const deleteRef = ref(db, `people/${childSnapshot.key}`);
+                            remove(deleteRef)
+                                .then(() => {
+                                    alert("Data Removed Successfully!");
+                                    document.querySelector("#deleteId").value = "";
+                                })
+                                .catch((error) => {
+                                    alert(error);
+                                });
+
+                            matchFound = true; // Match found, set flag to true
+                        }
+                    });
+
+                    if (!matchFound) {
+                        alert("Id not found");
+                    }
+                })
+                .catch((error) => {
+                    alert(error);
+                });
+        }
+
+
+        /*
+        Triggered when 'Find' button clicked
+        Retrieves entered id from input field
+        Retrieves corresponding data from 'people' using()
+        */
+        function funFindData() {
+            const findId = document.querySelector("#findId").value;
+            const dataRef = ref(db, `people/${findId}`);
+
+            get(dataRef)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        document.querySelector("#findname").textContent = `Name: ${data.name}`;
+                        document.querySelector("#findage").textContent = `Age: ${data.age}`;
+                    } else {
+                        /*document.querySelector("#findname").textContent = "Data not found";
+                        document.querySelector("#findage").textContent = "";*/
+                        alert("Id not found");
+                    }
+                })
+                .catch((error) => {
+                    alert(error);
+                });
+        }
+
+        var btnInsert = document.querySelector("#btninsert");
+        btnInsert.addEventListener("click", funInsertData);
+
+        var btnView = document.querySelector("#btnview");
+        btnView.addEventListener("click", funViewData);
+
+        var btnRemove = document.querySelector("#btnremove");
+        btnRemove.addEventListener("click", funRemoveData);
+
+        var btnUpdate = document.querySelector("#btnupdate");
+        btnUpdate.addEventListener("click", funUpdateData);
+
+        var btnFind = document.querySelector("#btnfind");
+        btnFind.addEventListener("click", funFindData);
+    </script>
+</body>
+
+</html>
