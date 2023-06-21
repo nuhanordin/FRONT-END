@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <title>Employee List</title>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="css/bootstrap.min.css">
+   <link rel="stylesheet" href="css/style.css">
+
+   <!-- Custom styles for this template -->
+   <link href="css/navbar-fixed-top.css" rel="stylesheet">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+   <script>
+      $(document).ready(function () {
+         $.ajax({
+            url: "https://kerbau.odaje.biz/getstaff.php",
+            dataType: "json",
+            success: function (data) {
+               var parsedData = data.map(function (item) {
+                  return JSON.parse(item);
+               });
+
+               for (var i = 0; i < parsedData.length; i++) {
+                  var employee = parsedData[i];
+                  var employeeNumber = employee.employeeNumber;
+                  var email = employee.email;
+
+                  var emptable = $("<table>").attr("id", employeeNumber);
+                  var emailtd = $("<td>").text(email);
+
+                  emptable.on("click", function () {
+                     var id = $(this).attr("id");
+                     window.location.href = "secondpage.html?employeeNumber=" + id;
+                  });
+
+                  emptable.append(emailtd);
+                  $("body").append(emptable);
+               }
+            },
+            error: function () {
+               console.log("Error occurred while retrieving data.");
+            }
+         });
+      });
+   </script>
+</head>
+
+<body>
+   <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+         <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">CSM3103</a>
+         </div>
+      </div>
+   </nav>
+
+
+   <nav class="navbar navbar-default navbar-fixed-bottom">
+      <div class="container">
+         <div class="row">
+            <div class="col-md-12">
+               Front End Programming &copy; 2023 by Nuha Nordin
+            </div>
+         </div>
+   </nav>
+
+   <h1>Employee List</h1>
+
+   <script src="js/jquery-3.2.1.min.js"></script>
+   <script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>

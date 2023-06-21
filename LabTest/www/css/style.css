@@ -1,0 +1,12 @@
+ h1{
+    text-align: center;
+    cursor: tool;
+ }
+ 
+ table, td {
+    color: blue;
+    padding: 5px;
+    margin-left: 30px;
+    
+ }
+

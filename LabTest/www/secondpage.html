@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Employee Details</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="css/navbar-fixed-top.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            var employeeNumber = urlParams.get("employeeNumber");
+
+            $.ajax({
+                url: "https://kerbau.odaje.biz/getstaff.php",
+                dataType: "json",
+                success: function (data) {
+                    var employees = data.map(JSON.parse);
+                    var employee = employees.find(function (emp) {
+                        return emp.employeeNumber === employeeNumber;
+                    });
+
+                    if (employee) {
+                        displayEmployeeDetails(employee);
+                    } else {
+                        $.ajax({
+                            url: "https://kerbau.odaje.biz/getstaffbyid.php",
+                            data: { employeeNumber: employeeNumber },
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.status === 1) {
+                                    displayEmployeeDetails(data);
+                                } else {
+                                    console.log("Employee not found.");
+                                }
+                            },
+                            error: function () {
+                                console.log("Error occurred while retrieving employee data.");
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    console.log("Error occurred while retrieving employee data.");
+                }
+            });
+
+            function displayEmployeeDetails(employee) {
+                $("#employeeNumber").text(employee.employeeNumber);
+                $("#firstName").text(employee.firstName);
+                $("#lastName").text(employee.lastName);
+                $("#extension").text(employee.extension);
+                $("#email").text(employee.email);
+                $("#officeCode").text(employee.officeCode);
+                $("#reportsTo").text(employee.reportsTo || "N/A");
+                $("#jobTitle").text(employee.jobTitle);
+            }
+
+        });
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">CSM3103</a>
+            </div>
+        </div>
+    </nav>
+
+
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    Front End Programming &copy; 2023 by Nuha Nordin
+                </div>
+            </div>
+    </nav>
+
+    <div class="container">
+        <h1>Employee Details</h1>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>Employee Number:</td>
+                    <td id="employeeNumber"></td>
+                </tr>
+                <tr>
+                    <td>Firstname:</td>
+                    <td id="firstName"></td>
+                </tr>
+                <tr>
+                    <td>Lastname:</td>
+                    <td id="lastName"></td>
+                </tr>
+                <tr>
+                    <td>Office Code:</td>
+                    <td id="officeCode"></td>
+                </tr>
+                <tr>
+                    <td>Phone Extension:</td>
+                    <td id="extension"></td>
+                </tr>
+                <tr>
+                    <td>Email Address:</td>
+                    <td id="email"></td>
+                </tr>
+                <tr>
+                    <td>Job Title:</td>
+                    <td id="jobTitle"></td>
+                </tr>
+                <tr>
+                    <td>Reports To:</td>
+                    <td id="reportsTo"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>
